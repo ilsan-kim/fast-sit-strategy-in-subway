@@ -7,7 +7,6 @@ import (
 	sk_api "where-do-i-sit/internal/app/sk-api"
 	"where-do-i-sit/internal/app/storage"
 	"where-do-i-sit/pkg/cache"
-	"where-do-i-sit/pkg/cache/memcache"
 )
 
 type Scheduler struct {
@@ -18,13 +17,13 @@ type Scheduler struct {
 }
 
 func (s *Scheduler) InitScheduleJobs() {
-	go s.GetStationScheduler(30 * time.Minute)
+	go s.GetStationScheduler(24 * time.Hour)
 }
 
 func NewScheduler() *Scheduler {
 	return &Scheduler{
 		trafficService: sk_api.NewService(),
-		cache:          memcache.NewMemCache(),
+		cache:          storage.MemCache,
 	}
 }
 
