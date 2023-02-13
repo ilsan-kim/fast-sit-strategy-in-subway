@@ -10,9 +10,9 @@ import (
 	"where-do-i-sit/internal/app"
 	"where-do-i-sit/internal/app/error"
 	"where-do-i-sit/internal/app/sk-api"
+	"where-do-i-sit/internal/app/storage"
 	"where-do-i-sit/internal/utils"
 	"where-do-i-sit/pkg/cache"
-	"where-do-i-sit/pkg/cache/memcache"
 )
 
 type Server struct {
@@ -44,7 +44,7 @@ func New() *Server {
 	}
 
 	server.httpServer = httpServer
-	server.cache = memcache.NewMemCache()
+	server.cache = storage.MemCache
 
 	return server
 }
@@ -74,10 +74,14 @@ func errorGetHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s Server) stationListGetHandler(w http.ResponseWriter, r *http.Request) {
-	res, err := s.trafficService.GetStationList()
-	if err != nil {
-		respError(w, err)
-		return
+	var err error
+	res, exists := s.cache.Get("stationList")
+	if !exists {
+		res, err = s.trafficService.GetStationList()
+		if err != nil {
+			respError(w, err)
+			return
+		}
 	}
 	resp, err := json.Marshal(res)
 	if err != nil {
