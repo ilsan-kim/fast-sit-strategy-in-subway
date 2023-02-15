@@ -9,15 +9,15 @@ import (
 	"time"
 	"where-do-i-sit/internal/app"
 	"where-do-i-sit/internal/app/error"
-	"where-do-i-sit/internal/app/sk-api"
+	"where-do-i-sit/internal/app/service/traffic_service"
 	"where-do-i-sit/internal/app/storage"
-	"where-do-i-sit/internal/utils"
+	"where-do-i-sit/internal/runtime_util"
 	"where-do-i-sit/pkg/cache"
 )
 
 type Server struct {
 	httpServer     *http.Server
-	trafficService app.TrafficService
+	trafficService traffic_service.TrafficService
 	cache          cache.Cache
 
 	IsRunning bool
@@ -35,7 +35,7 @@ func (s Server) startedString() {
 
 func New() *Server {
 	server := new(Server)
-	server.trafficService = sk_api.NewService()
+	server.trafficService = traffic_service.New()
 
 	httpServer := &http.Server{
 		Addr:              ":8081",
@@ -120,7 +120,7 @@ func (s Server) ShutdownGracefully(ctx context.Context) error {
 	s.IsRunning = false
 	err := s.httpServer.Shutdown(ctx)
 	for {
-		cnt := len(utils.GracefulShubdownJob)
+		cnt := len(runtime_util.GracefulShubdownJob)
 		if cnt == 0 {
 			break
 		}

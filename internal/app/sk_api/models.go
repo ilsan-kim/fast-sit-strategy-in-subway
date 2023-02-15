@@ -1,6 +1,6 @@
 package sk_api
 
-type GetStationListResp struct {
+type getStationListResp struct {
 	Contents []struct {
 		SubwayLine  string `json:"subwayLine"`
 		StationName string `json:"stationName"`
@@ -8,7 +8,7 @@ type GetStationListResp struct {
 	} `json:"contents"`
 }
 
-type GetCongestionForCarResp struct {
+type getCongestionForCarResp struct {
 	Contents struct {
 		SubwayLine  string `json:"subwayLine"`
 		StationName string `json:"stationName"`

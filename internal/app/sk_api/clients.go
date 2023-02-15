@@ -11,7 +11,7 @@ import (
 	"where-do-i-sit/config"
 	"where-do-i-sit/internal/app"
 	"where-do-i-sit/internal/app/error"
-	http_util "where-do-i-sit/internal/http-util"
+	http_util "where-do-i-sit/internal/http_util"
 )
 
 var dowMap = map[int]string{
@@ -48,7 +48,7 @@ func getDefaultHeader() map[string]string {
 }
 
 func GetStationList() (ret []app.Station, err error) {
-	var res GetStationListResp
+	var res getStationListResp
 	url := "https://apis.openapi.sk.com/puzzle/subway/stations"
 	headers := getDefaultHeader()
 
@@ -82,7 +82,7 @@ func GetStationList() (ret []app.Station, err error) {
 }
 
 func GetCongestionForCar(stationCode string, time time.Time) (ret any, err error) {
-	var res GetCongestionForCarResp
+	var res getCongestionForCarResp
 	dow := getDow(time)
 	hour, err := getHourIfAvailable(time)
 	if err != nil {
