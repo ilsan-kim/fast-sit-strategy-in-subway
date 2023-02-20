@@ -2,10 +2,10 @@ package traffic_service
 
 import (
 	"log"
+	"time"
 	"where-do-i-sit/internal/app"
 	serror "where-do-i-sit/internal/app/error"
 	"where-do-i-sit/internal/app/sk_api"
-	"where-do-i-sit/internal/app/storage"
 	"where-do-i-sit/pkg/cache"
 )
 
@@ -13,9 +13,9 @@ type TrafficService struct {
 	cache cache.Cache
 }
 
-func New() TrafficService {
+func New(cache cache.Cache) TrafficService {
 	return TrafficService{
-		storage.MemCache,
+		cache,
 	}
 }
 
@@ -27,7 +27,8 @@ func (t TrafficService) GetStationByName(s string) (station app.Station, err err
 	var stations []app.Station
 	res, exists := t.cache.Get("stationList")
 	if !exists {
-		stations, err = sk_api.GetStationList()
+		stations, err = t.GetStationList()
+		t.cache.Set("stationList", stations, 24*time.Hour)
 		if err != nil {
 			return
 		}

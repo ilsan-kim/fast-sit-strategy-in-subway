@@ -13,7 +13,7 @@ import (
 func init() {
 	var err error
 	log.Println("load configs..")
-	config.Conf, err = config.Load(filepath.Join("../../config.json"))
+	config.Conf, err = config.Load(filepath.Join("../../../config.json"))
 	if err != nil {
 		log.Panic(err)
 	}

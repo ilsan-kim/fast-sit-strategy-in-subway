@@ -35,7 +35,7 @@ func (s Server) startedString() {
 
 func New() *Server {
 	server := new(Server)
-	server.trafficService = traffic_service.New()
+	server.trafficService = traffic_service.New(storage.MemCache)
 
 	httpServer := &http.Server{
 		Addr:              ":8081",

@@ -19,22 +19,22 @@ func (s *Scheduler) InitScheduleJobs() {
 
 func NewScheduler() *Scheduler {
 	return &Scheduler{
-		trafficService: traffic_service.New(),
+		trafficService: traffic_service.New(storage.MemCache),
 		cache:          storage.MemCache,
 	}
 }
 
 func (s *Scheduler) GetStationScheduler(d time.Duration) {
-	station := storage.StationList
+	stations := storage.StationList
 	var err error
 	for {
-		station, err = s.trafficService.GetStationList()
+		stations, err = s.trafficService.GetStationList()
 		if err != nil {
 			log.Println(err)
 		}
 		// TODO 스테이션을 map 형태로 저장하여 검색속도 빠르게 만들기
-		s.cache.Set("stationList", station, d)
-		log.Printf("total station %d refreshed\n", len(station))
+		s.cache.Set("stationList", stations, d)
+		log.Printf("total station %d refreshed\n", len(stations))
 		time.Sleep(d)
 	}
 }
