@@ -8,4 +8,6 @@ import (
 type TrafficServiceAPI interface {
 	GetStationList() ([]app.Station, error)
 	GetStationByName(string) (app.Station, error)
+	GetStatisticCongestion(string) (any, error)
+	GetRealtimeCongestion(string) (any, error)
 }

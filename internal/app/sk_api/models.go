@@ -8,17 +8,21 @@ type getStationListResp struct {
 	} `json:"contents"`
 }
 
-type getCongestionForCarResp struct {
+type getStatisticCongestionResp struct {
 	Contents struct {
 		SubwayLine  string `json:"subwayLine"`
 		StationName string `json:"stationName"`
 		StationCode string `json:"stationCode"`
 		Stat        []struct {
-			PrevStationCode string `json:"prevStationCode"`
-			PrevStationName string `json:"prevStationName"`
-			UpdnLine        int    `json:"updnLine"`
-			DirectAt        int    `json:"directAt"`
-			Data            []struct {
+			StartStationCode string `json:"startStationCode"`
+			StartStationName string `json:"startStationName"`
+			EndStationCode   string `json:"endStationCode"`
+			EndStationName   string `json:"endStationName"`
+			PrevStationCode  string `json:"prevStationCode"`
+			PrevStationName  string `json:"prevStationName"`
+			UpdnLine         int    `json:"updnLine"`
+			DirectAt         int    `json:"directAt"`
+			Data             []struct {
 				Dow           string `json:"dow"`
 				Hh            string `json:"hh"`
 				Mm            string `json:"mm"`

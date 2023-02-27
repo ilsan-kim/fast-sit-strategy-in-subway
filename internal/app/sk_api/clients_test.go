@@ -92,6 +92,27 @@ func TestGetHour(t *testing.T) {
 }
 
 func TestGetCongestionForCar(t *testing.T) {
-	tt := time.Date(2023, 1, 27, 5, 30, 0, 0, time.Local)
-	_, _ = GetCongestionForCar("144", tt)
+	// TODO 9시 20분 50초 > 9시 30분의 통계 정보를 보여주는게 맞는지..
+	t.Run("정상적인 시간대에 응답이 제데로 내려오는지, 9시 20분 50초의 요청은 9시 30분의 통계 정보를 보여주는지", func(t *testing.T) {
+		tt := time.Date(2023, 1, 27, 9, 20, 50, 0, time.Local)
+		ret, err := GetStatisticCongestion("216", "217", tt)
+		assert.NoError(t, err)
+		assert.NotEqual(t, len(ret), 0)
+		assert.Equal(t, ret[0].ResponseTime.Hour(), 9)
+		assert.Equal(t, ret[0].ResponseTime.Minute(), 30)
+	})
+
+	t.Run("비정상적인 시간대에 에러가 잘 오는지", func(t *testing.T) {
+		tt := time.Date(2023, 1, 27, 4, 10, 59, 0, time.Local)
+		ret, err := GetStatisticCongestion("216", "217", tt)
+		assert.Equal(t, err, serror.ErrInvalidRequestTime)
+		assert.Equal(t, len(ret), 0)
+	})
+
+	t.Run("데이터가 없을때 에러가 잘 오는지", func(t *testing.T) {
+		tt := time.Date(2023, 1, 27, 5, 30, 59, 0, time.Local)
+		ret, err := GetStatisticCongestion("P555", "P554", tt)
+		assert.Equal(t, err, serror.ErrNoData)
+		assert.Equal(t, len(ret), 0)
+	})
 }

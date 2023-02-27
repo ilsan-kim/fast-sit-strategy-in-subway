@@ -81,12 +81,12 @@ func GetStationList() (ret []app.Station, err error) {
 	return
 }
 
-func GetCongestionForCar(stationCode string, time time.Time) (ret any, err error) {
-	var res getCongestionForCarResp
-	dow := getDow(time)
-	hour, err := getHourIfAvailable(time)
+func GetStatisticCongestion(stationCode string, prevStationCode string, t time.Time) (ret []app.Congestion, err error) {
+	var res getStatisticCongestionResp
+	dow := getDow(t)
+	hour, err := getHourIfAvailable(t)
 	if err != nil {
-		return nil, err
+		return ret, err
 	}
 	url := fmt.Sprintf("https://apis.openapi.sk.com/puzzle/congestion-car/stat/stations/%s?dow=%s&hh=%s", stationCode, dow, hour)
 	headers := getDefaultHeader()
@@ -94,11 +94,11 @@ func GetCongestionForCar(stationCode string, time time.Time) (ret any, err error
 	resp, err := http_util.GetAsJSON(url, headers)
 	if err != nil {
 		log.Println(err)
-		return nil, err
+		return ret, err
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode == http.StatusInternalServerError {
-		return nil, serror.ErrExternalService
+		return ret, serror.ErrExternalService
 	}
 
 	respBody, err := ioutil.ReadAll(resp.Body)
@@ -109,6 +109,66 @@ func GetCongestionForCar(stationCode string, time time.Time) (ret any, err error
 
 	err = json.Unmarshal(respBody, &res)
 
-	log.Println(res)
-	return nil, nil
+	for _, stat := range res.Contents.Stat {
+		if stat.PrevStationCode == prevStationCode {
+			firstMetTime := time.Time{}
+
+			for _, data := range stat.Data {
+				congestion := 0
+				for _, c := range data.CongestionCar {
+					congestion += c
+				}
+				if congestion == 0 {
+					continue
+				}
+
+				hInt, _ := strconv.Atoi(data.Hh)
+				mInt, _ := strconv.Atoi(data.Mm)
+
+				dataTime := makeTime(t, hInt, mInt)
+				if t.After(dataTime) {
+					continue
+				}
+
+				if firstMetTime.Equal(time.Time{}) {
+					firstMetTime = dataTime
+				}
+
+				if !firstMetTime.Equal(time.Time{}) && !dataTime.Equal(firstMetTime) {
+					continue
+				}
+
+				if stat.EndStationCode == "211-R" {
+					stat.EndStationName = "순환"
+				}
+
+				ret = append(ret, app.Congestion{
+					From: app.Station{
+						Name: stat.PrevStationName,
+						Line: res.Contents.SubwayLine,
+						Code: stat.PrevStationCode,
+					},
+					ForwardFor: app.Station{
+						Name: stat.EndStationName,
+						Line: res.Contents.SubwayLine,
+						Code: stat.EndStationCode,
+					},
+					Congestion:   data.CongestionCar,
+					ResponseTime: dataTime,
+					IsRealtime:   false,
+				})
+				log.Printf("[%s:%s]%s에서 오는 %s 출발 %s행 기차 칸별 혼잡도 %v", data.Hh, data.Mm, stat.PrevStationName, stat.StartStationName, stat.EndStationName, data.CongestionCar)
+			}
+		}
+	}
+
+	if len(ret) == 0 {
+		return nil, serror.ErrNoData
+	}
+	
+	return ret, nil
+}
+
+func makeTime(t time.Time, hh, mm int) time.Time {
+	return time.Date(t.Year(), t.Month(), t.Day(), hh, mm, 0, 0, time.Local)
 }

@@ -52,3 +52,13 @@ func (t TrafficService) GetStationByName(s string) (station app.Station, err err
 	err = serror.ErrNoSuchStation
 	return
 }
+
+func (t TrafficService) GetStatisticCongestion(s string) (any, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (t TrafficService) GetRealtimeCongestion(s string) (any, error) {
+	//TODO implement me
+	panic("implement me")
+}
