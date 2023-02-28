@@ -1,6 +1,7 @@
 package traffic_service
 
 import (
+	"time"
 	"where-do-i-sit/internal/app"
 )
 
@@ -8,6 +9,6 @@ import (
 type TrafficServiceAPI interface {
 	GetStationList() ([]app.Station, error)
 	GetStationByName(string) (app.Station, error)
-	GetStatisticCongestion(string) (any, error)
-	GetRealtimeCongestion(string) (any, error)
+	GetStatisticCongestion(stationCode, prevStationCode string, time time.Time) ([]app.Congestion, error)
+	GetRealtimeCongestion(stationCode, prevStationCode string) (app.Congestion, error)
 }
