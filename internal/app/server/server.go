@@ -53,8 +53,10 @@ func (s Server) RegisterHandler() {
 	mux := http.NewServeMux()
 	mux.Handle("/hello", middlewareContentType(http.HandlerFunc(helloGetHandler)))
 	mux.Handle("/err", middlewareContentType(http.HandlerFunc(errorGetHandler)))
+
 	mux.Handle("/stations", middlewareContentType(http.HandlerFunc(s.stationListGetHandler)))
 	mux.Handle("/stations/search", middlewareContentType(http.HandlerFunc(s.stationGetHandler)))
+	mux.Handle("/stations/congestion", middlewareContentType(http.HandlerFunc(s.statisticCongestionHandler)))
 
 	s.httpServer.Handler = mux
 	return
@@ -72,40 +74,6 @@ func helloGetHandler(w http.ResponseWriter, r *http.Request) {
 func errorGetHandler(w http.ResponseWriter, r *http.Request) {
 	e := serror.ErrInvalidRequestTime
 	respError(w, e)
-}
-
-func (s Server) stationListGetHandler(w http.ResponseWriter, r *http.Request) {
-	var err error
-	res, exists := s.cache.Get("stationList")
-	if !exists {
-		res, err = s.trafficService.GetStationList()
-		if err != nil {
-			respError(w, err)
-			return
-		}
-	}
-	resp, err := json.Marshal(res)
-	if err != nil {
-		respError(w, err)
-	}
-	_, _ = w.Write(resp)
-	return
-}
-
-func (s Server) stationGetHandler(w http.ResponseWriter, r *http.Request) {
-	// TODO 용어사전 만들어야함
-	q := r.URL.Query().Get("q")
-	res, err := s.trafficService.GetStationByName(q)
-	if err != nil {
-		respError(w, err)
-	}
-	resp, err := json.Marshal(res)
-	if err != nil {
-		respError(w, err)
-	}
-
-	_, _ = w.Write(resp)
-	return
 }
 
 func middlewareContentType(next http.Handler) http.Handler {

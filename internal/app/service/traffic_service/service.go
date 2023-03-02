@@ -53,9 +53,9 @@ func (t TrafficService) GetStationByName(s string) (station app.Station, err err
 	return
 }
 
-func (t TrafficService) GetStatisticCongestion(stationCode, prevStationCode string, time time.Time) ([]app.Congestion, error) {
-	//TODO implement me
-	panic("implement me")
+func (t TrafficService) GetStatisticCongestion(stationCode, prevStationCode string, time time.Time) (ret []app.Congestion, err error) {
+	ret, err = sk_api.GetStatisticCongestion(stationCode, prevStationCode, time)
+	return
 }
 
 func (t TrafficService) GetRealtimeCongestion(stationCode, prevStationCode string) (app.Congestion, error) {
