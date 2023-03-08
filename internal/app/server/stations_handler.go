@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"time"
+	serror "where-do-i-sit/internal/app/error"
 )
 
 func (s Server) stationListGetHandler(w http.ResponseWriter, r *http.Request) {
@@ -26,14 +27,29 @@ func (s Server) stationListGetHandler(w http.ResponseWriter, r *http.Request) {
 
 func (s Server) stationGetHandler(w http.ResponseWriter, r *http.Request) {
 	// TODO 용어사전 만들어야함
-	q := r.URL.Query().Get("q")
-	res, err := s.trafficService.GetStationByName(q)
+	lineQ := r.URL.Query().Get("line")
+	if lineQ == "" {
+		e := serror.ErrNoRequiredParam
+		respError(w, e.FormatMsg("line"))
+		return
+	}
+
+	stationQ := r.URL.Query().Get("station")
+	if stationQ == "" {
+		e := serror.ErrNoRequiredParam
+		respError(w, e.FormatMsg("station"))
+		return
+	}
+
+	res, err := s.trafficService.GetStationByName(stationQ, lineQ)
 	if err != nil {
 		respError(w, err)
+		return
 	}
 	resp, err := json.Marshal(res)
 	if err != nil {
 		respError(w, err)
+		return
 	}
 
 	_, _ = w.Write(resp)
@@ -41,27 +57,50 @@ func (s Server) stationGetHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s Server) statisticCongestionHandler(w http.ResponseWriter, r *http.Request) {
+	lineQ := r.URL.Query().Get("line")
+	if lineQ == "" {
+		e := serror.ErrNoRequiredParam
+		respError(w, e.FormatMsg("line"))
+		return
+	}
+
 	stationQ := r.URL.Query().Get("station")
+	if stationQ == "" {
+		e := serror.ErrNoRequiredParam
+		respError(w, e.FormatMsg("station"))
+		return
+	}
+
 	prevStationQ := r.URL.Query().Get("prevStation")
+	if prevStationQ == "" {
+		e := serror.ErrNoRequiredParam
+		respError(w, e.FormatMsg("prevStation"))
+
+		return
+	}
 
 	// TODO hashmap 으로.. 변경
-	station, err := s.trafficService.GetStationByName(stationQ)
+	station, err := s.trafficService.GetStationByName(stationQ, lineQ)
 	if err != nil {
 		respError(w, err)
+		return
 	}
-	prevStation, err := s.trafficService.GetStationByName(prevStationQ)
+	prevStation, err := s.trafficService.GetStationByName(prevStationQ, lineQ)
 	if err != nil {
 		respError(w, err)
+		return
 	}
 
 	res, err := s.trafficService.GetStatisticCongestion(station.Code, prevStation.Code, time.Now())
 	if err != nil {
 		respError(w, err)
+		return
 	}
 
 	resp, err := json.Marshal(res)
 	if err != nil {
 		respError(w, err)
+		return
 	}
 
 	_, _ = w.Write(resp)

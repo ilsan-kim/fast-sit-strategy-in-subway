@@ -82,6 +82,7 @@ func GetStationList() (ret []app.Station, err error) {
 }
 
 func GetStatisticCongestion(stationCode string, prevStationCode string, t time.Time) (ret []app.Congestion, err error) {
+	t = time.Date(2023, 3, 8, 19, 10, 01, 0, time.Local)
 	var res getStatisticCongestionResp
 	dow := getDow(t)
 	hour, err := getHourIfAvailable(t)
@@ -165,10 +166,15 @@ func GetStatisticCongestion(stationCode string, prevStationCode string, t time.T
 	if len(ret) == 0 {
 		return nil, serror.ErrNoData
 	}
-	
+
 	return ret, nil
 }
 
 func makeTime(t time.Time, hh, mm int) time.Time {
 	return time.Date(t.Year(), t.Month(), t.Day(), hh, mm, 0, 0, time.Local)
+}
+
+func GetRealtimeCongestion(stationCode string, prevStationCode string, t time.Time) (ret []app.Congestion, err error) {
+
+	return
 }

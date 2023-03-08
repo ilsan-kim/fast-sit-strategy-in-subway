@@ -23,7 +23,7 @@ func (t TrafficService) GetStationList() ([]app.Station, error) {
 	return sk_api.GetStationList()
 }
 
-func (t TrafficService) GetStationByName(s string) (station app.Station, err error) {
+func (t TrafficService) GetStationByName(s string, line string) (station app.Station, err error) {
 	var stations []app.Station
 	res, exists := t.cache.Get("stationList")
 	if !exists {
@@ -43,7 +43,7 @@ func (t TrafficService) GetStationByName(s string) (station app.Station, err err
 	}
 
 	for _, st := range stations {
-		if st.Name == s {
+		if st.Name == s && st.Line == line {
 			station = st
 			return
 		}

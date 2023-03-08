@@ -92,13 +92,15 @@ func respError(w http.ResponseWriter, err error) {
 		data, err := json.Marshal(v)
 		if err != nil {
 			fmt.Fprint(w, err.Error())
+			return
 		}
 		fmt.Fprint(w, string(data))
+		return
 	default:
 		w.WriteHeader(http.StatusInternalServerError)
 		fmt.Fprint(w, err.Error())
+		return
 	}
-	log.Println(err.Error())
 }
 
 func (s Server) ShutdownGracefully(ctx context.Context) error {
