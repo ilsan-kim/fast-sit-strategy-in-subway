@@ -81,8 +81,52 @@ func GetStationList() (ret []app.Station, err error) {
 	return
 }
 
+func GetStations() (ret app.Stations, err error) {
+	ret = make(app.Stations)
+	var res getStationListResp
+	url := "https://apis.openapi.sk.com/puzzle/subway/stations"
+	headers := getDefaultHeader()
+
+	resp, err := http_util.GetAsJSON(url, headers)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode == http.StatusInternalServerError {
+		return nil, serror.ErrExternalService
+	}
+
+	respBody, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	err = json.Unmarshal(respBody, &res)
+
+	for _, station := range res.Contents {
+		if val, ok := ret[station.StationName]; !ok {
+			s := app.Station{
+				Name: station.StationName,
+				Line: station.SubwayLine,
+				Code: station.StationCode,
+			}
+			ret[station.StationName] = append(ret[station.StationName], s)
+		} else {
+			s := app.Station{
+				Name: station.StationName,
+				Line: station.SubwayLine,
+				Code: station.StationCode,
+			}
+
+			ret[station.StationName] = append(val, s)
+		}
+	}
+	return
+}
+
 func GetStatisticCongestion(stationCode string, prevStationCode string, t time.Time) (ret []app.Congestion, err error) {
-	t = time.Date(2023, 3, 8, 19, 10, 01, 0, time.Local)
 	var res getStatisticCongestionResp
 	dow := getDow(t)
 	hour, err := getHourIfAvailable(t)

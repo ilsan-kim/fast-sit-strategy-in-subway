@@ -19,3 +19,5 @@ type Congestion struct {
 	ResponseTime time.Time
 	IsRealtime   bool
 }
+
+type Stations map[string][]Station

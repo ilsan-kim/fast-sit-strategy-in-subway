@@ -28,6 +28,16 @@ func TestGetStationList(t *testing.T) {
 	}
 }
 
+func TestGetStations(t *testing.T) {
+	stations, err := GetStations()
+	assert.NoError(t, err)
+	for k, v := range stations {
+		for _, s := range v {
+			t.Logf("%s %s: code > %s", s.Line, k, s.Code)
+		}
+	}
+}
+
 func TestGetDow(t *testing.T) {
 	sun := time.Date(2023, 1, 22, 23, 0, 0, 0, time.Local)
 
