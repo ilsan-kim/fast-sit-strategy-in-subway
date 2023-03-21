@@ -17,7 +17,7 @@ import (
 
 type Server struct {
 	httpServer     *http.Server
-	trafficService traffic_service.TrafficService
+	trafficService traffic_service.TrafficServiceAPI
 	cache          cache.Cache
 
 	IsRunning bool

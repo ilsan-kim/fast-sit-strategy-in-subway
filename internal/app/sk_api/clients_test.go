@@ -19,15 +19,6 @@ func init() {
 	}
 }
 
-func TestGetStationList(t *testing.T) {
-	stations, err := GetStationList()
-	assert.NoError(t, err)
-
-	for _, station := range stations {
-		t.Logf("%s %s: code > %s", station.Line, station.Name, station.Code)
-	}
-}
-
 func TestGetStations(t *testing.T) {
 	stations, err := GetStations()
 	assert.NoError(t, err)

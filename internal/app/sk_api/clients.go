@@ -47,40 +47,6 @@ func getDefaultHeader() map[string]string {
 	}
 }
 
-func GetStationList() (ret []app.Station, err error) {
-	var res getStationListResp
-	url := "https://apis.openapi.sk.com/puzzle/subway/stations"
-	headers := getDefaultHeader()
-
-	resp, err := http_util.GetAsJSON(url, headers)
-	if err != nil {
-		log.Println(err)
-		return
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode == http.StatusInternalServerError {
-		return nil, serror.ErrExternalService
-	}
-
-	respBody, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		log.Println(err)
-		return
-	}
-
-	err = json.Unmarshal(respBody, &res)
-
-	for _, station := range res.Contents {
-		ret = append(ret, app.Station{
-			Name: station.StationName,
-			Line: station.SubwayLine,
-			Code: station.StationCode,
-		})
-	}
-
-	return
-}
-
 func GetStations() (ret app.Stations, err error) {
 	ret = make(app.Stations)
 	var res getStationListResp

@@ -12,3 +12,4 @@ func init() {
 
 var MemCache cache.Cache
 var StationList []app.Station
+var Stations app.Stations

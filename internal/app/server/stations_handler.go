@@ -9,9 +9,9 @@ import (
 
 func (s Server) stationListGetHandler(w http.ResponseWriter, r *http.Request) {
 	var err error
-	res, exists := s.cache.Get("stationList")
+	res, exists := s.cache.Get("stations")
 	if !exists {
-		res, err = s.trafficService.GetStationList()
+		res, err = s.trafficService.GetStations()
 		if err != nil {
 			respError(w, err)
 			return

@@ -5,9 +5,11 @@
 package mock_traffic_service
 
 import (
-	gomock "github.com/golang/mock/gomock"
 	reflect "reflect"
-	traffic_service "where-do-i-sit/internal/app"
+	time "time"
+	app "where-do-i-sit/internal/app"
+
+	gomock "github.com/golang/mock/gomock"
 )
 
 // MockTrafficServiceAPI is a mock of TrafficServiceAPI interface.
@@ -33,32 +35,62 @@ func (m *MockTrafficServiceAPI) EXPECT() *MockTrafficServiceAPIMockRecorder {
 	return m.recorder
 }
 
-// GetStationByName mocks base method.
-func (m *MockTrafficServiceAPI) GetStationByName(arg0 string) (traffic_service.Station, error) {
+// GetRealtimeCongestion mocks base method.
+func (m *MockTrafficServiceAPI) GetRealtimeCongestion(stationCode, prevStationCode string) (app.Congestion, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetStationByName", arg0)
-	ret0, _ := ret[0].(traffic_service.Station)
+	ret := m.ctrl.Call(m, "GetRealtimeCongestion", stationCode, prevStationCode)
+	ret0, _ := ret[0].(app.Congestion)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetRealtimeCongestion indicates an expected call of GetRealtimeCongestion.
+func (mr *MockTrafficServiceAPIMockRecorder) GetRealtimeCongestion(stationCode, prevStationCode interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRealtimeCongestion", reflect.TypeOf((*MockTrafficServiceAPI)(nil).GetRealtimeCongestion), stationCode, prevStationCode)
+}
+
+// GetStationByName mocks base method.
+func (m *MockTrafficServiceAPI) GetStationByName(arg0, arg1 string) (app.Station, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetStationByName", arg0, arg1)
+	ret0, _ := ret[0].(app.Station)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetStationByName indicates an expected call of GetStationByName.
-func (mr *MockTrafficServiceAPIMockRecorder) GetStationByName(arg0 interface{}) *gomock.Call {
+func (mr *MockTrafficServiceAPIMockRecorder) GetStationByName(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetStationByName", reflect.TypeOf((*MockTrafficServiceAPI)(nil).GetStationByName), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetStationByName", reflect.TypeOf((*MockTrafficServiceAPI)(nil).GetStationByName), arg0, arg1)
 }
 
-// GetStationList mocks base method.
-func (m *MockTrafficServiceAPI) GetStationList() ([]traffic_service.Station, error) {
+// GetStations mocks base method.
+func (m *MockTrafficServiceAPI) GetStations() (app.Stations, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetStationList")
-	ret0, _ := ret[0].([]traffic_service.Station)
+	ret := m.ctrl.Call(m, "GetStations")
+	ret0, _ := ret[0].(app.Stations)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// GetStationList indicates an expected call of GetStationList.
-func (mr *MockTrafficServiceAPIMockRecorder) GetStationList() *gomock.Call {
+// GetStations indicates an expected call of GetStations.
+func (mr *MockTrafficServiceAPIMockRecorder) GetStations() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetStationList", reflect.TypeOf((*MockTrafficServiceAPI)(nil).GetStationList))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetStations", reflect.TypeOf((*MockTrafficServiceAPI)(nil).GetStations))
+}
+
+// GetStatisticCongestion mocks base method.
+func (m *MockTrafficServiceAPI) GetStatisticCongestion(stationCode, prevStationCode string, time time.Time) ([]app.Congestion, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetStatisticCongestion", stationCode, prevStationCode, time)
+	ret0, _ := ret[0].([]app.Congestion)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetStatisticCongestion indicates an expected call of GetStatisticCongestion.
+func (mr *MockTrafficServiceAPIMockRecorder) GetStatisticCongestion(stationCode, prevStationCode, time interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetStatisticCongestion", reflect.TypeOf((*MockTrafficServiceAPI)(nil).GetStatisticCongestion), stationCode, prevStationCode, time)
 }
