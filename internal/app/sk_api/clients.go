@@ -93,6 +93,10 @@ func GetStations() (ret app.Stations, err error) {
 }
 
 func GetStatisticCongestion(stationCode string, prevStationCode string, t time.Time) (ret []app.Congestion, err error) {
+	// 50분이 지났다면, 다음 시간(hour)로 넘겨 계산한다.
+	if t.Minute() >= 50 {
+		t = time.Date(t.Year(), t.Month(), t.Day(), t.Hour()+1, 0, t.Second(), t.Nanosecond(), t.Location())
+	}
 	var res getStatisticCongestionResp
 	dow := getDow(t)
 	hour, err := getHourIfAvailable(t)
@@ -122,9 +126,10 @@ func GetStatisticCongestion(stationCode string, prevStationCode string, t time.T
 
 	for _, stat := range res.Contents.Stat {
 		if stat.PrevStationCode == prevStationCode {
-			firstMetTime := time.Time{}
-
+			//firstMetTime := time.Time{}
 			for _, data := range stat.Data {
+
+				// 혼잡도가 응답되지 않은 stat.Data 는 제외한다.
 				congestion := 0
 				for _, c := range data.CongestionCar {
 					congestion += c
@@ -137,15 +142,8 @@ func GetStatisticCongestion(stationCode string, prevStationCode string, t time.T
 				mInt, _ := strconv.Atoi(data.Mm)
 
 				dataTime := makeTime(t, hInt, mInt)
-				if t.After(dataTime) {
-					continue
-				}
-
-				if firstMetTime.Equal(time.Time{}) {
-					firstMetTime = dataTime
-				}
-
-				if !firstMetTime.Equal(time.Time{}) && !dataTime.Equal(firstMetTime) {
+				// 10분 이내의 dataTime 을 가져온다.
+				if t.After(dataTime) || t.Add(time.Minute*10).Before(dataTime) {
 					continue
 				}
 
