@@ -3,10 +3,10 @@ package traffic_service
 import (
 	"log"
 	"time"
-	"where-do-i-sit/internal/app"
-	serror "where-do-i-sit/internal/app/error"
-	"where-do-i-sit/internal/app/sk_api"
 	"where-do-i-sit/pkg/cache"
+	"where-do-i-sit/server/internal/app"
+	"where-do-i-sit/server/internal/app/error"
+	"where-do-i-sit/server/internal/app/sk_api"
 )
 
 type TrafficService struct {

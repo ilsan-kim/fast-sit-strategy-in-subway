@@ -7,7 +7,7 @@ package mock_traffic_service
 import (
 	reflect "reflect"
 	time "time"
-	app "where-do-i-sit/internal/app"
+	"where-do-i-sit/server/internal/app"
 
 	gomock "github.com/golang/mock/gomock"
 )

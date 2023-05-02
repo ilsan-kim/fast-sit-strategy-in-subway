@@ -7,11 +7,11 @@ import (
 	"path/filepath"
 	"testing"
 	"time"
-	"where-do-i-sit/config"
-	"where-do-i-sit/internal/app"
-	serror "where-do-i-sit/internal/app/error"
-	"where-do-i-sit/internal/app/storage"
 	"where-do-i-sit/pkg/cache/mock_cache"
+	"where-do-i-sit/server/config"
+	"where-do-i-sit/server/internal/app"
+	"where-do-i-sit/server/internal/app/error"
+	"where-do-i-sit/server/internal/app/storage"
 )
 
 func init() {

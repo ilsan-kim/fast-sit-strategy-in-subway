@@ -7,17 +7,17 @@ import (
 	"log"
 	"net/http"
 	"time"
-	"where-do-i-sit/internal/app"
-	"where-do-i-sit/internal/app/error"
-	"where-do-i-sit/internal/app/service/traffic_service"
-	"where-do-i-sit/internal/app/storage"
-	"where-do-i-sit/internal/runtime_util"
 	"where-do-i-sit/pkg/cache"
+	"where-do-i-sit/server/internal/app"
+	"where-do-i-sit/server/internal/app/error"
+	traffic_service2 "where-do-i-sit/server/internal/app/service/traffic_service"
+	"where-do-i-sit/server/internal/app/storage"
+	"where-do-i-sit/server/internal/runtime_util"
 )
 
 type Server struct {
 	httpServer     *http.Server
-	trafficService traffic_service.TrafficServiceAPI
+	trafficService traffic_service2.TrafficServiceAPI
 	cache          cache.Cache
 
 	IsRunning bool
@@ -35,7 +35,7 @@ func (s Server) startedString() {
 
 func New() *Server {
 	server := new(Server)
-	server.trafficService = traffic_service.New(storage.MemCache)
+	server.trafficService = traffic_service2.New(storage.MemCache)
 
 	httpServer := &http.Server{
 		Addr:              ":8081",

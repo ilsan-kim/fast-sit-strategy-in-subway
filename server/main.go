@@ -5,10 +5,10 @@ import (
 	"flag"
 	"log"
 	"time"
-	"where-do-i-sit/config"
-	"where-do-i-sit/internal/app/scheduler"
-	"where-do-i-sit/internal/app/server"
-	"where-do-i-sit/internal/runtime_util"
+	"where-do-i-sit/server/config"
+	"where-do-i-sit/server/internal/app/scheduler"
+	"where-do-i-sit/server/internal/app/server"
+	"where-do-i-sit/server/internal/runtime_util"
 )
 
 var configPath *string

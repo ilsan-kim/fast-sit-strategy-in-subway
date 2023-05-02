@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"time"
-	serror "where-do-i-sit/internal/app/error"
+	"where-do-i-sit/server/internal/app/error"
 )
 
 func (s Server) stationListGetHandler(w http.ResponseWriter, r *http.Request) {

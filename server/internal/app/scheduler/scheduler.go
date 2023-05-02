@@ -3,17 +3,17 @@ package scheduler
 import (
 	"log"
 	"time"
-	"where-do-i-sit/internal/app/service/traffic_service"
-	"where-do-i-sit/internal/app/storage"
 	"where-do-i-sit/pkg/cache"
+	traffic_service2 "where-do-i-sit/server/internal/app/service/traffic_service"
+	"where-do-i-sit/server/internal/app/storage"
 )
 
 var (
-	_ traffic_service.TrafficServiceAPI = (*traffic_service.TrafficService)(nil)
+	_ traffic_service2.TrafficServiceAPI = (*traffic_service2.TrafficService)(nil)
 )
 
 type Scheduler struct {
-	trafficService traffic_service.TrafficServiceAPI
+	trafficService traffic_service2.TrafficServiceAPI
 	cache          cache.Cache
 }
 
@@ -23,7 +23,7 @@ func (s *Scheduler) InitScheduleJobs() {
 
 func NewScheduler() *Scheduler {
 	return &Scheduler{
-		trafficService: traffic_service.New(storage.MemCache),
+		trafficService: traffic_service2.New(storage.MemCache),
 		cache:          storage.MemCache,
 	}
 }

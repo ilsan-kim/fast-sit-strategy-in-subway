@@ -8,10 +8,10 @@ import (
 	"net/http"
 	"strconv"
 	"time"
-	"where-do-i-sit/config"
-	"where-do-i-sit/internal/app"
-	"where-do-i-sit/internal/app/error"
-	http_util "where-do-i-sit/internal/http_util"
+	"where-do-i-sit/server/config"
+	"where-do-i-sit/server/internal/app"
+	"where-do-i-sit/server/internal/app/error"
+	"where-do-i-sit/server/internal/http_util"
 )
 
 var dowMap = map[int]string{

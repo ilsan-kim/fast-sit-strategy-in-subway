@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 	"testing"
 	"time"
-	"where-do-i-sit/config"
-	"where-do-i-sit/internal/app/error"
+	"where-do-i-sit/server/config"
+	"where-do-i-sit/server/internal/app/error"
 )
 
 func init() {
@@ -76,7 +76,7 @@ func TestGetHour(t *testing.T) {
 		fail := time.Date(2023, 1, 27, 5, 29, 59, 0, time.Local)
 		_, err = getHourIfAvailable(fail)
 		assert.Error(t, err, "")
-		assert.Equal(t, err, serror.ErrInvalidRequestTime)
+		assert.Equal(t, err, serror.serror.ErrInvalidRequestTime)
 	})
 
 	t.Run("23시 50분까지 요청 가능, 그 이후는 실패", func(t *testing.T) {
