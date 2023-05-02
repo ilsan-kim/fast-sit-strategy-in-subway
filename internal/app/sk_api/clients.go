@@ -62,7 +62,9 @@ func GetStations() (ret app.Stations, err error) {
 	if resp.StatusCode == http.StatusInternalServerError {
 		return nil, serror.ErrExternalService
 	}
-
+	if resp.StatusCode == http.StatusTooManyRequests {
+		return nil, serror.ErrQuotaExceed
+	}
 	respBody, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		log.Println(err)
@@ -114,6 +116,9 @@ func GetStatisticCongestion(stationCode string, prevStationCode string, t time.T
 	defer resp.Body.Close()
 	if resp.StatusCode == http.StatusInternalServerError {
 		return ret, serror.ErrExternalService
+	}
+	if resp.StatusCode == http.StatusTooManyRequests {
+		return ret, serror.ErrQuotaExceed
 	}
 
 	respBody, err := ioutil.ReadAll(resp.Body)
