@@ -35,9 +35,10 @@ func (s *Scheduler) GetStationScheduler(d time.Duration) {
 		stations, err = s.trafficService.GetStations()
 		if err != nil {
 			log.Println(err)
+		} else {
+			s.cache.Set("stations", stations, d)
 		}
-		// TODO 스테이션을 map 형태로 저장하여 검색속도 빠르게 만들기
-		s.cache.Set("stations", stations, d)
+
 		log.Printf("total station %d refreshed\n", len(stations))
 		time.Sleep(d)
 	}
